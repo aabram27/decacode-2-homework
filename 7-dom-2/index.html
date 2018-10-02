@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Slider</title>
+  </head>
+  <body data-slides="1, 2, 3, 4, 5">
+    <script type="text/javascript">
+      (() => {
+        slides = document.body.dataset.slides.split(', ');
+        let currentSlide = 0;
+        const $sliderDiv = document.createElement('div');
+        $sliderDiv.className = 'sliderDiv';
+        $sliderDiv.id = 'sliderDiv';
+        const $leftBtn = document.createElement('button');
+        const $rightBtn = document.createElement('button');
+        $leftBtn.textContent = '<';
+        $leftBtn.className ='leftBtn';
+        $rightBtn.className = 'rightBtn';
+        $rightBtn.textContent = '>';
+        $sliderDiv.appendChild($leftBtn);
+        $sliderDiv.appendChild($rightBtn);
+        
+        const $pageDiv = document.createElement('div');
+        $pageDiv.className = 'pageDiv';
+        $pageDiv.textContent='1/'+(slides.length);
+        $sliderDiv.appendChild($pageDiv);
+
+        let $slide = document.createElement('div');
+        $slide.innerHTML = '<h3>' + slides[currentSlide] + '</h3>';
+        $slide.className= 'slide';
+        
+        $sliderDiv.appendChild($slide);
+
+        $leftBtn.onclick = () =>{
+            moveToSlide(currentSlide-1);  
+        };
+        $rightBtn.onclick = () => {
+            moveToSlide(currentSlide+1);
+        };
+        const $navDiv = document.createElement('div');
+        $navDiv.className = 'navDiv';
+        slides.forEach((x,i) => {
+            const $navBtn = document.createElement('button');
+            $navBtn.textContent = x;
+            $navBtn.className = 'navBtn';
+            $navBtn.onclick = () =>{
+                moveToSlide(i);
+            };
+            $navDiv.appendChild($navBtn);
+        });
+        $sliderDiv.appendChild($navDiv);
+        
+        const moveToSlide = (slide) =>{
+            if (slides[slide] !== undefined){
+                $sliderDiv.removeChild($slide);
+                $slide = document.createElement('div');
+                $slide.className ='slide';
+                $sliderDiv.appendChild($slide);
+                $slide.innerHTML = '<h3>' + slides[slide] + '</h3>';
+                
+                $slide.classList.add(currentSlide<slide ? 'slideRight':'slideLeft');
+            
+                $pageDiv.textContent=slide + 1+ '/'+(slides.length);
+                currentSlide = slide;
+                clearTimeout(timer);
+                timer = setTimeout(()=>{moveToSlide(currentSlide+1)}, 4000)
+            }
+        };
+        let timer =setTimeout(()=>{moveToSlide(currentSlide+1)}, 4000);
+        
+        document.body.appendChild($sliderDiv);
+
+      })();
+    </script>
+  </body>
+</html>
+<style>
+#sliderDiv{
+    position:relative;
+    box-sizing: border-box;
+    width:500px;
+    height:350px;
+    background-color: lightgray;
+    text-align: center;
+}
+button.leftBtn, button.rightBtn {
+    position:absolute;
+    top:150px;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+    font-size: 2em;
+}
+.leftBtn{
+    left:0px;
+}
+.rightBtn{
+    right:0px;
+}
+.navDiv{
+    position: absolute;
+    bottom: 0;
+    width:100%;
+    text-align: center;
+    height:60px;
+    
+}
+.pageDiv{
+    padding:0px;
+    margin: 0;
+    font-size: 1.2em;
+    
+}
+.navBtn{
+    
+}
+.slide{
+    margin:10px 40px; 
+    text-align: center;
+    width:420px;
+    height: 250px;
+    background-color: white;
+    border:1px solid black;
+    float:right;
+    
+}
+.slideLeft{
+    float:left;
+    animation-duration: 2s;
+    animation-name: move;
+}
+.slideRight{
+    float:right;
+    animation-duration: 2s;
+    animation-name: move;
+}
+
+@keyframes move {
+    from {width: 0px;}
+    to {width: 400px;}
+}
+
+</style>
